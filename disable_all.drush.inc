@@ -22,11 +22,17 @@ function disable_all_drush_command() {
 }
 
 function drush_disable_all_kill_all_modules() {
+  if (variable_get('disable_all_modules_disabled', FALSE)) {
+    return drush_set_error(dt('Cannot disable all modules as they are already disabled.'));
+  }
   module_load_include('admin.inc', 'disable_all');
   disable_all_disable_all();
 }
 
 function drush_disable_all_necro_all_modules() {
+  if (!variable_get('disable_all_modules_disabled', FALSE)) {
+    drush_set_error(dt('Cannot re-enable all modules as they have not been disabled.'));
+  }
   module_load_include('admin.inc', 'disable_all');
   disable_all_enable_all();
 }
