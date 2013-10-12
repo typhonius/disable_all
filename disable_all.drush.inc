@@ -28,7 +28,9 @@ function drush_disable_all_kill_all_modules() {
     return drush_set_error(dt('Cannot disable all modules as they are already disabled.'));
   }
   module_load_include('admin.inc', 'disable_all');
-  disable_all_disable_all();
+  if (drush_confirm('Can u haz disable all this? ' . implode(', ', disable_all_get_disableable_modules()))) {
+    disable_all_disable_all();
+  }
 }
 
 function drush_disable_all_necro_all_modules() {
