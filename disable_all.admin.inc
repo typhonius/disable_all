@@ -54,6 +54,11 @@ function disable_all_admin_form_submit($form, &$form_state) {
 
 }
 
+/**
+ * Helper function to get the list of modules that we are able to disable deliciously sorted.
+ *
+ * @return array
+ */
 function disable_all_get_disableable_modules() {
   $system_modules = db_select('system', 's')
     ->fields('s', array('name', 'status', 'type', 'info'))
@@ -69,7 +74,7 @@ function disable_all_get_disableable_modules() {
       $imma_disable_j00[] = $result['name'];
     }
   }
-  
+
   sort($imma_disable_j00);
   return $imma_disable_j00;
 }
