@@ -3,3 +3,4 @@ description = Simple module to allow an administrative user to disable all modul
 package = Development
 core = 7.x
 configure = admin/config/development/disable_all
+files[] = disable_all.test

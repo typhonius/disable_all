@@ -1,0 +1,67 @@
+<?php
+
+/**
+ * @file
+ * Tests for disable_all module.
+ */
+
+/**
+ * Test disable_all functionality.
+ */
+class DisableAllTest extends ModuleTestCase {
+  protected $privileged_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Disable all test',
+      'description' => 'Tests the site\'s ability to disable and re-enable all non essential modules.',
+      'group' => 'Disable All',
+    );
+  }
+
+  function setUp(array $modules = array()) {
+    DrupalWebTestCase::setUp(array('disable_all'));
+
+    $this->privileged_user = $this->drupalCreateUser(array(
+      'access disable all',
+    ));
+    $this->drupalLogin($this->privileged_user);
+  }
+
+  /**
+   * Test module disables and reenables.
+   */
+  protected function testDisableReenableAll() {
+    $this->drupalGet('admin/config/development/disable_all');
+    $this->assertRaw(t('Dooo eeeet!'));
+
+    // Ensure a non-required module is there and required modules are not
+    $this->assertText('comment');
+    $this->assertText('path');
+    $this->assertNoText('filter');
+
+    // Disable the modules, check the dsm text and ensure modules are disabled
+    $this->drupalPost('admin/config/development/disable_all', array(), t('Dooo eeeet!'));
+    $this->assertText(t('Lol disabled:'));
+
+    $this->assertModules(array('comment'), FALSE);
+    $this->assertModules(array('path'), FALSE);
+    $this->assertModules(array('filter'), TRUE);
+
+    // Do the reverse
+    $this->drupalGet('/admin/config/development/disable_all');
+    $this->assertRaw(t('Undooo eeeet!'));
+
+    $this->assertModules(array('comment'), FALSE);
+    $this->assertModules(array('path'), FALSE);
+    $this->assertModules(array('filter'), TRUE);
+
+    $this->drupalPost('admin/config/development/disable_all', array(), t('Undooo eeeet!'));
+    $this->assertText(t('Just enabled these:'));
+
+    $this->assertModules(array('comment'), TRUE);
+    $this->assertModules(array('path'), TRUE);
+    $this->assertModules(array('filter'), TRUE);
+  }
+
+}
