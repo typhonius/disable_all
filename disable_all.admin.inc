@@ -4,6 +4,13 @@
  * @file Admin page for disable all module
  */
 
+/**
+ * Form callback to display submit buttons for disabling and enabling modules on the site.
+ *
+ * @param $form
+ * @param $form_state
+ * @return array
+ */
 function disable_all_admin_form($form, &$form_state) {
   $form = array();
 
@@ -25,6 +32,13 @@ function disable_all_admin_form($form, &$form_state) {
   return $form;
 }
 
+/**
+ * Submit callback for disable_all_admin_form() to act upon the buttons pressed
+ *
+ * @see disable_all_admin_form()
+ * @param $form
+ * @param $form_state
+ */
 function disable_all_admin_form_submit($form, &$form_state) {
   $clicked = $form_state['clicked_button']['#parents'][0];
 
@@ -39,6 +53,7 @@ function disable_all_admin_form_submit($form, &$form_state) {
       $imma_disable_j00 = array();
       while ($result = $system_modules->fetchAssoc()) {
         $info = unserialize($result['info']);
+        // Disabling required modules is superbad and let's not disable this module either.
         if (!isset($info['required']) && $result['name'] != 'disable_all'){
           $imma_disable_j00[] = $result['name'];
         }
@@ -46,6 +61,7 @@ function disable_all_admin_form_submit($form, &$form_state) {
 
       module_disable($imma_disable_j00);
       variable_set('disable_all_modules_disabled', TRUE);
+      // Save the modules that are disabled so we can go back to that state whenever.
       variable_set('disable_all_enabled_modules', serialize($imma_disable_j00));
       drupal_set_message(t('Lol disabled: ') . implode(', ', $imma_disable_j00));
       break;
@@ -54,6 +70,7 @@ function disable_all_admin_form_submit($form, &$form_state) {
       module_enable($disabled_modules);
       drupal_set_message(t('Just enabled these: ') . implode(', ', $disabled_modules));
       variable_del('disable_all_modules_disabled');
+      variable_del('disable_all_modules_enabled');
       break;
   }
 
