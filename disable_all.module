@@ -13,7 +13,8 @@
 function disable_all_menu() {
   $items['admin/config/development/disable_all'] = array(
     'title' => 'Disable all modules',
-    'page callback' => 'disable_all_admin_form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('disable_all_admin_form'),
     'description' => 'Disable all of the modules on a Drupal site',
     'access arguments' => array('access disable all'),
     'file' => 'disable_all.admin.inc',
