@@ -12,10 +12,12 @@ function disable_all_drush_command() {
   $items['kill-all-modules'] = array(
     'description' => dt('Disables all non-required Drupal modules.'),
     'aliases' => array('dam'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
   );
   $items['necro-all-modules'] = array(
     'description' => dt('Reenables all previously disabled modules.'),
     'aliases' => array('eam'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUPAL_DATABASE,
   );
 
   return $items;
