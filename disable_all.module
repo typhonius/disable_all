@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file Module file for disable_all, a module that disables all modules from
+ * a site for development purposes
+ */
+
+/**
+ * Implements hook_menu().
+ *
+ * @return mixed
+ */
+function disable_all_menu() {
+  $items['admin/config/development/disable_all'] = array(
+    'title' => 'Disable all modules',
+    'page callback' => 'disable_all_admin_form',
+    'description' => 'Disable all of the modules on a Drupal site',
+    'access arguments' => array('access disable all'),
+    'file' => 'disable_all.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * @return array
+ */
+function disable_all_permission() {
+  return array(
+    'access disable all' => array(
+      'description' => t('Allows the user to disable all modules'),
+      'title' => t('Access disable all'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
