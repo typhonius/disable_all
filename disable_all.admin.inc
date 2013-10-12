@@ -25,14 +25,12 @@ function disable_all_admin_form($form, &$form_state) {
     ),
     'dooo_eeet' => array(
       '#type' => 'submit',
-      '#value' => t('Dooo eeeet!'),
-      '#access' => !$disable_status,
+      '#value' => $disable_status ? t('Undooo eeeet!') : t('Dooo eeeet!'),
     ),
-    'undooo_eeet' => array(
-      '#type' => 'submit',
-      '#value' => t('Undooo eeeet!'),
-      '#access' => $disable_status,
-    ),
+    'isitdeaddad' => array(
+      '#type' => 'hidden',
+      '#value' => $disable_status,
+    )
   );
 
   return $form;
@@ -46,15 +44,12 @@ function disable_all_admin_form($form, &$form_state) {
  * @param $form_state
  */
 function disable_all_admin_form_submit($form, &$form_state) {
-  $clicked = $form_state['clicked_button']['#parents'][0];
 
-  switch ($clicked) {
-    case 'dooo_eeet':
-      disable_all_disable_all();
-      break;
-    case 'undooo_eeet':
-      disable_all_enable_all();
-      break;
+  if ($form_state['values']['isitdeaddad']) {
+    disable_all_enable_all();
+  }
+  else {
+    disable_all_disable_all();
   }
 
 }
