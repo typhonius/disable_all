@@ -74,7 +74,8 @@ function disable_all_get_disableable_modules() {
       $imma_disable_j00[] = $result['name'];
     }
   }
-
+  
+  sort($imma_disable_j00);
   return $imma_disable_j00;
 }
 
