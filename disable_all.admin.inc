@@ -12,7 +12,7 @@ function disable_all_admin_form($form, &$form_state) {
   $form['disable_all'] = array(
     'enabled_modules' => array(
       '#type' => 'hidden',
-      '#value' => serialize($enabled_modules),
+      '#value' => $enabled_modules,
     ),
     'dooo_eeet' => array(
       '#type' => 'submit',
@@ -32,11 +32,16 @@ function disable_all_admin_form_submit($form, &$form_state) {
 
   switch ($clicked) {
     case 'dooo_eeet':
-      variable_set('disable_all_modules_disabled', 1);
-      variable_set('disable_all_enabled_modules', $form_state['values']['enabled_modules']);
+//      if (module_disable($form_state['values']['enabled_modules'])) {
+//        variable_set('disable_all_modules_disabled', 1);
+//        variable_set('disable_all_enabled_modules', serialize($form_state['values']['enabled_modules']));
+//      }
       break;
     case 'undooo_eeet':
-      variable_del('disable_all_modules_disabled');
+//      $disabled_modules = unserialize(variable_get('disable_all_enabled_modules', serialize(array())));
+//      if (module_enable($disabled_modules)) {
+//        variable_del('disable_all_modules_disabled');
+//      }
       break;
   }
 
