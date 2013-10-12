@@ -15,8 +15,14 @@ function disable_all_admin_form($form, &$form_state) {
   $form = array();
 
   $disable_status = variable_get('disable_all_modules_disabled', FALSE);
+  $affected = $disable_status ? unserialize(variable_get('disable_all_enabled_modules', serialize(array()))) : disable_all_get_disableable_modules();
+  $title = $disable_status ? t('Modules to be enabled') : t('Modules to be disabled');
 
   $form['disable_all'] = array(
+    'looka_looka' => array(
+      '#type' => 'item',
+      '#markup' => theme('item_list', array('title' => $title, 'items' => $affected)),
+    ),
     'dooo_eeet' => array(
       '#type' => 'submit',
       '#value' => t('Dooo eeeet!'),
@@ -53,10 +59,7 @@ function disable_all_admin_form_submit($form, &$form_state) {
 
 }
 
-/**
- * Function to disable all non-required modules.
- */
-function disable_all_disable_all() {
+function disable_all_get_disableable_modules() {
   $system_modules = db_select('system', 's')
     ->fields('s', array('name', 'status', 'type', 'info'))
     ->condition('type', 'module')
@@ -71,6 +74,15 @@ function disable_all_disable_all() {
       $imma_disable_j00[] = $result['name'];
     }
   }
+
+  return $imma_disable_j00;
+}
+
+/**
+ * Function to disable all non-required modules.
+ */
+function disable_all_disable_all() {
+  $imma_disable_j00 = disable_all_get_disableable_modules();
 
   module_disable($imma_disable_j00);
   variable_set('disable_all_modules_disabled', TRUE);
