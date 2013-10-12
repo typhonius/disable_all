@@ -1,0 +1,5 @@
+name = Disable All
+description = Simple module to allow an administrative user to disable all modules quickly and then bring them back again
+package = Development
+core = 7.x
+configure = admin/config/development/disable_all
