@@ -7,20 +7,18 @@
 function disable_all_admin_form($form, &$form_state) {
   $form = array();
 
-  $enabled_modules = module_list();
+  $disable_status = variable_get('disable_all_modules_disabled', FALSE);
 
   $form['disable_all'] = array(
-    'enabled_modules' => array(
-      '#type' => 'hidden',
-      '#value' => $enabled_modules,
-    ),
     'dooo_eeet' => array(
       '#type' => 'submit',
       '#value' => t('Dooo eeeet!'),
+      '#access' => !$disable_status,
     ),
     'undooo_eeet' => array(
       '#type' => 'submit',
       '#value' => t('Undooo eeeet!'),
+      '#access' => $disable_status,
     ),
   );
 
@@ -32,16 +30,30 @@ function disable_all_admin_form_submit($form, &$form_state) {
 
   switch ($clicked) {
     case 'dooo_eeet':
-//      if (module_disable($form_state['values']['enabled_modules'])) {
-//        variable_set('disable_all_modules_disabled', 1);
-//        variable_set('disable_all_enabled_modules', serialize($form_state['values']['enabled_modules']));
-//      }
+      $system_modules = db_select('system', 's')
+        ->fields('s', array('name', 'status', 'type', 'info'))
+        ->condition('type', 'module')
+        ->condition('status', 1)
+        ->execute();
+
+      $imma_disable_j00 = array();
+      while ($result = $system_modules->fetchAssoc()) {
+        $info = unserialize($result['info']);
+        if (!isset($info['required']) && $result['name'] != 'disable_all'){
+          $imma_disable_j00[] = $result['name'];
+        }
+      }
+
+      module_disable($imma_disable_j00);
+      variable_set('disable_all_modules_disabled', TRUE);
+      variable_set('disable_all_enabled_modules', serialize($imma_disable_j00));
+      drupal_set_message(t('Lol disabled: ') . implode(', ', $imma_disable_j00));
       break;
     case 'undooo_eeet':
-//      $disabled_modules = unserialize(variable_get('disable_all_enabled_modules', serialize(array())));
-//      if (module_enable($disabled_modules)) {
-//        variable_del('disable_all_modules_disabled');
-//      }
+      $disabled_modules = unserialize(variable_get('disable_all_enabled_modules', serialize(array())));
+      module_enable($disabled_modules);
+      drupal_set_message(t('Just enabled these: ') . implode(', ', $disabled_modules));
+      variable_del('disable_all_modules_disabled');
       break;
   }
 
